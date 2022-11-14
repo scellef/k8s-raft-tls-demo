@@ -1,0 +1,80 @@
+global:
+  enabled: true
+  tlsDisable: false
+
+injector:
+  enabled: false
+
+server:
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-tls/vault.ca
+
+  volumes:
+    - name: vault-tls
+      secret:
+        defaultMode: 420
+        secretName: vault-tls # Matches the ${SECRET_NAME} from above
+
+  volumeMounts:
+    - mountPath: /vault/userconfig/vault-tls
+      name: vault-tls
+      readOnly: true
+
+  affinity: ''
+  image:
+    repository: hashicorp/vault-enterprise
+    tag: 1.12.1-ent
+  enterpriseLicense:
+    secretName: vault-license
+    secretKey: vault.hclic
+
+  auditStorage:
+    enabled: true
+    size: 1Gi
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      config: |
+        ui = true
+
+        service_registration "kubernetes" {}
+        log_level = "trace"
+        log_requests_level = "trace"
+        raw_storage_endpoint = "true"
+
+        listener "tcp" {
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          tls_cert_file = "/vault/userconfig/vault-tls/vault.crt"
+          tls_key_file  = "/vault/userconfig/vault-tls/vault.key"
+          tls_client_ca_file = "/vault/userconfig/vault-tls/vault.ca"
+          telemetry {
+            unauthenticated_metrics_access = true
+          }
+        }
+
+        listener "tcp" {
+          address = "localhost:8210"
+          cluster_address = "localhost:8211"
+          tls_disable = 1
+          telemetry {
+            unauthenticated_metrics_access = true
+          }
+        }
+
+        telemetry {
+          prometheus_retention_time = "24h"
+          disable_hostname = true
+        }
+
+        storage "raft" {
+          path = "/vault/data"
+          retry_join {
+            auto_join_scheme = "https"
+            auto_join = "provider=k8s"
+            leader_tls_servername = "vault"
+            leader_ca_cert_file = "/vault/userconfig/vault-tls/vault.ca"
+          }
+        }

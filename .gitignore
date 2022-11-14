@@ -1,0 +1,6 @@
+csr.conf
+csr.yaml
+server.csr
+vault.ca
+vault.crt
+vault.key
