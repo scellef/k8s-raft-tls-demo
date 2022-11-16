@@ -31,18 +31,14 @@ DNS.13 = vault-2
 DNS.14 = vault-2.default
 DNS.15 = vault-2.default.pod
 DNS.16 = vault-2.default.pod.cluster.local
-DNS.17 = vault-2
-DNS.18 = vault-2.default
-DNS.19 = vault-2.default.pod
-DNS.20 = vault-2.default.pod.cluster.local
-DNS.21 = vault-active
-DNS.22 = vault-active.default
-DNS.23 = vault-active.default.svc
-DNS.24 = vault-active.default.svc.cluster.local
-DNS.21 = vault-standby
-DNS.22 = vault-standby.default
-DNS.23 = vault-standby.default.svc
-DNS.24 = vault-standby.default.svc.cluster.local
+DNS.17 = vault-active
+DNS.18 = vault-active.default
+DNS.19 = vault-active.default.svc
+DNS.20 = vault-active.default.svc.cluster.local
+DNS.17 = vault-standby
+DNS.18 = vault-standby.default
+DNS.19 = vault-standby.default.svc
+DNS.20 = vault-standby.default.svc.cluster.local
 IP.1 = 127.0.0.1
 EOF
 
